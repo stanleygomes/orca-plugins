@@ -1,10 +1,10 @@
-# Compare for Orca
+# Jacob & Esau for Orca
 
 Compare two pieces of text or JSON side by side, without a Git repository or project files.
 
 ## Install
 
-Requires Orca 1.4.245 or later. Clone this repository and install the local `plugins/compare` folder through **Settings → Plugins**. Open the **Compare** sidebar panel.
+Requires Orca 1.4.245 or later. Clone this repository and install the local `plugins/jacob-esau` folder through **Settings → Plugins**. Open the **Jacob & Esau** sidebar panel.
 
 ## Use
 
@@ -14,4 +14,4 @@ The comparison runs in the panel on your computer. The plugin has no worker or n
 
 ## Development
 
-Run `node --test plugins/compare/*.test.mjs` from the repository root. Exercise the file chooser and panel in a compatible Orca installation when available.
+Run `node --test plugins/jacob-esau/*.test.mjs` from the repository root. Exercise the file chooser and panel in a compatible Orca installation when available.

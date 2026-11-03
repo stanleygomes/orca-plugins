@@ -17,6 +17,6 @@ Run `node --test plugins/*/*.test.mjs` from the root. Also validate and exercise
 
 `plugins/noemi` is a data-only adaptation of Noemi for VS Code. Keep its four app themes, TextMate rules, and terminal palettes aligned with the source palette. Preserve the upstream MIT license and document any Orca-specific approximations.
 
-## Compare
+## Jacob & Esau
 
-`plugins/compare` compares user-provided text in a sandboxed panel. Keep contents local, render them as text, and preserve the comparison size limit.
+`plugins/jacob-esau` compares user-provided text in a sandboxed panel. Keep contents local, render them as text, and preserve the comparison size limit.
