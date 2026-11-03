@@ -12,3 +12,7 @@ Run `node --test plugins/*/*.test.mjs` from the root. Also validate and exercise
 - Notes belong to the user. Never run tests against real notes; use temporary directories.
 - Preserve conflict detection and warn about its non-atomic check. Never silently overwrite a file changed since it was opened.
 - The worker has full filesystem access. Validate requests and only open paths present in the current index; keep user content out of HTML interpolation.
+
+## Noemi Theme
+
+`plugins/noemi` is a data-only adaptation of Noemi for VS Code. Keep its four app themes, TextMate rules, and terminal palettes aligned with the source palette. Preserve the upstream MIT license and document any Orca-specific approximations.

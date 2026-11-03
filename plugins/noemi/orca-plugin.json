@@ -1,0 +1,60 @@
+{
+  "manifestVersion": 2,
+  "execution": "data",
+  "id": "noemi",
+  "publisher": "stanleygomes",
+  "name": "Noemi Theme",
+  "version": "1.0.0",
+  "description": "Noemi colors for Orca, adapted from Noemi for VS Code.",
+  "engines": {
+    "orca": ">=1.4.245"
+  },
+  "pluginApi": 1,
+  "contributes": {
+    "themes": [
+      {
+        "id": "noemi-dark",
+        "title": "Noemi Dark",
+        "path": "themes/dark-app.json"
+      },
+      {
+        "id": "noemi-light",
+        "title": "Noemi Light",
+        "path": "themes/light-app.json"
+      },
+      {
+        "id": "noemi-red",
+        "title": "Noemi Red",
+        "path": "themes/red-app.json"
+      },
+      {
+        "id": "noemi-blue",
+        "title": "Noemi Blue",
+        "path": "themes/blue-app.json"
+      }
+    ],
+    "terminalThemes": [
+      {
+        "id": "noemi-dark-terminal",
+        "title": "Noemi Dark",
+        "path": "themes/dark-terminal.json"
+      },
+      {
+        "id": "noemi-light-terminal",
+        "title": "Noemi Light",
+        "path": "themes/light-terminal.json"
+      },
+      {
+        "id": "noemi-red-terminal",
+        "title": "Noemi Red",
+        "path": "themes/red-terminal.json"
+      },
+      {
+        "id": "noemi-blue-terminal",
+        "title": "Noemi Blue",
+        "path": "themes/blue-terminal.json"
+      }
+    ]
+  },
+  "capabilities": []
+}
