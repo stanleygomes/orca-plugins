@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 12px; color: var(--orca-foreground, #ddd); background: var(--orca-background, transparent); font: 13px system-ui, sans-serif; }
+  h1 { font-size: 15px; margin: 0; } .bar { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
+  input, textarea, button { font: inherit; color: inherit; background: var(--orca-secondary, #292929); border: 1px solid var(--orca-border, #555); border-radius: 5px; padding: 7px; }
+  button { cursor: pointer; } button:disabled { opacity: .5; cursor: default; } input { width: 100%; } textarea { width: 100%; min-height: 45vh; resize: vertical; font-family: monospace; line-height: 1.5; }
+  #list { display: grid; gap: 4px; margin: 8px 0; max-height: 35vh; overflow: auto; } .note { text-align: left; overflow-wrap: anywhere; }
+  .note[aria-current="true"] { outline: 2px solid var(--orca-primary, #888); } #status { white-space: pre-wrap; min-height: 1.4em; } #title { overflow-wrap: anywhere; flex: 1; }
+</style>
+</head>
+<body>
+<div class="bar"><h1>Codex Notes</h1><button id="refresh" type="button">Refresh</button></div>
+<input id="search" type="search" placeholder="Search notes" aria-label="Search notes">
+<div id="list"></div>
+<div class="bar"><strong id="title">Select a note</strong><button id="discard" type="button" disabled>Discard</button><button id="save" type="button" disabled>Save</button></div>
+<textarea id="editor" aria-label="Note content" disabled placeholder="Select a note to edit"></textarea>
+<p id="status" role="status"></p>
+<script>
+'use strict'
+const list = document.getElementById('list'), search = document.getElementById('search')
+const editor = document.getElementById('editor'), save = document.getElementById('save')
+const discard = document.getElementById('discard')
+const title = document.getElementById('title'), status = document.getElementById('status')
+let notes = [], selected = null, revision = null, saved = '', saving = false
+const dirty = () => selected && editor.value !== saved
+function render() {
+  list.replaceChildren()
+  const filtered = notes.filter(n => n.title.toLowerCase().includes(search.value.toLowerCase()))
+  for (const note of filtered) {
+    const button = document.createElement('button')
+    button.type = 'button'; button.className = 'note'
+    button.textContent = (note.favorite ? '★ ' : '') + note.title
+    button.setAttribute('aria-current', String(selected === note.path))
+    button.addEventListener('click', () => open(note.path))
+    list.append(button)
+  }
+  if (!filtered.length) list.textContent = notes.length ? 'No matching notes.' : 'No notes found in notes.json.'
+}
+async function refresh() {
+  try { notes = await orca.plugin.request('notes.list', {}); render(); status.textContent = '' }
+  catch (error) { status.textContent = error.message }
+}
+async function open(path) {
+  if (saving) return
+  if (dirty()) { status.textContent = 'Save or discard your changes first.'; return }
+  try {
+    const result = await orca.plugin.request('notes.open', { path })
+    selected = path; revision = result.revision; saved = result.content
+    editor.value = saved; editor.disabled = false; save.disabled = true; discard.disabled = true
+    title.textContent = result.note.title; status.textContent = ''; render()
+  } catch (error) { status.textContent = error.message }
+}
+editor.addEventListener('input', () => { save.disabled = !dirty(); discard.disabled = !dirty() })
+discard.addEventListener('click', () => { editor.value = saved; save.disabled = true; discard.disabled = true; status.textContent = 'Changes discarded.' })
+search.addEventListener('input', render)
+document.getElementById('refresh').addEventListener('click', refresh)
+save.addEventListener('click', async () => {
+  const content = editor.value
+  saving = true; save.disabled = true; discard.disabled = true; editor.disabled = true
+  try {
+    const result = await orca.plugin.request('notes.save', { path: selected, content, revision })
+    revision = result.revision; saved = content; status.textContent = 'Saved.'
+  } catch (error) { status.textContent = error.message }
+  saving = false; editor.disabled = false; save.disabled = !dirty(); discard.disabled = !dirty()
+})
+refresh()
+</script>
+</body>
+</html>

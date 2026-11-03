@@ -1,0 +1,15 @@
+{
+  "manifestVersion": 2,
+  "execution": "trusted-worker",
+  "id": "codex-notes-orca",
+  "name": "Codex Notes",
+  "version": "0.1.0",
+  "description": "Browse and edit the Markdown notes shared with Codex Notes for VS Code.",
+  "engines": { "orca": ">=1.4.246" },
+  "pluginApi": 1,
+  "main": "main.mjs",
+  "contributes": {
+    "panels": [{ "id": "notes", "title": "Codex Notes", "icon": "book", "entry": "panel.html" }]
+  },
+  "capabilities": []
+}
