@@ -1,9 +1,14 @@
-# Codex Notes for Orca
+# Orca plugins
 
-An Orca sidebar plugin for browsing and editing notes shared with Codex Notes for VS Code. `orca-plugin.json` declares the trusted Node worker (`main.mjs`) and sandboxed HTML panel (`panel.html`).
+This repository contains independent Orca plugins, one per folder under `plugins/`. Each plugin has its own `orca-plugin.json` and README. Keep plugin code and tests inside its folder; update the root README's plugin table when adding, removing, or renaming a plugin.
+
+Run `node --test plugins/*/*.test.mjs` from the root. Also validate and exercise changed plugins in a compatible Orca installation when available. Document version requirements and installation changes.
+
+## Codex Notes
+
+`plugins/codex-notes` is an Orca sidebar plugin for browsing and editing notes shared with Codex Notes for VS Code. It declares a trusted Node worker and sandboxed HTML panel.
 
 - Preserve compatibility with `~/.codex-notes/notes.json` and its `filePath` entries. Do not rewrite the metadata index without addressing concurrent changes by the VS Code extension.
-- Notes belong to the user. Never run tests against their real notes; use temporary directories.
+- Notes belong to the user. Never run tests against real notes; use temporary directories.
 - Preserve conflict detection and warn about its non-atomic check. Never silently overwrite a file changed since it was opened.
 - The worker has full filesystem access. Validate requests and only open paths present in the current index; keep user content out of HTML interpolation.
-- Run `node --test`. Also validate and exercise the plugin in a compatible Orca installation when available. Update README when behavior or installation changes.
