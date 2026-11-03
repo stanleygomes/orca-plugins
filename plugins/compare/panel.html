@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+* { box-sizing: border-box }
+body { margin: 0; padding: 12px; font: 13px system-ui,sans-serif; color: var(--orca-foreground,#ddd); background: var(--orca-background,transparent) }
+h1 { font-size: 15px; margin: 0 0 10px } .inputs, .result-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px }
+label { display: block; font-weight: 600; margin-bottom: 5px } textarea { display: block; width: 100%; height: 150px; resize: vertical; margin-top: 6px; font: 12px/1.5 monospace }
+textarea,button,input { color: inherit; background: var(--orca-secondary,#292929); border: 1px solid var(--orca-border,#555); border-radius: 5px; padding: 6px } button { cursor: pointer } input[type=file] { width: 100%; font: 11px system-ui } .actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 }
+#status { min-height: 1.4em; white-space: pre-wrap } #result { overflow-x: auto; font: 12px/1.5 monospace } .result-row { gap: 0; min-width: 400px } .cell { padding: 2px 6px; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid var(--orca-border,#555) } .removed { background: rgba(200,55,55,.22) } .added { background: rgba(45,155,90,.22) } .empty { opacity: .35 } .number { opacity: .65; user-select: none }
+</style>
+</head>
+<body>
+<h1>Comparar textos</h1>
+<div class="inputs">
+  <div><label for="left">Original</label><input type="file" id="left-file" aria-label="Carregar arquivo original"><textarea id="left" placeholder="Cole o texto original"></textarea></div>
+  <div><label for="right">Novo</label><input type="file" id="right-file" aria-label="Carregar arquivo novo"><textarea id="right" placeholder="Cole o texto novo"></textarea></div>
+</div>
+<div class="actions"><button id="compare">Comparar texto</button><button id="json">Comparar JSON formatado</button><button id="clear">Limpar</button></div>
+<p id="status" role="status"></p><div id="result" aria-label="Resultado da comparação"></div>
+<script>
+'use strict'
+// BEGIN DIFF
+function diffLines(left, right) {
+  const a = left.split('\n'), b = right.split('\n')
+  if (a.length * b.length > 1000000) throw new Error('Comparação grande demais. Use até 1 milhão de combinações de linhas.')
+  const width = b.length + 1, table = new Uint32Array((a.length + 1) * width)
+  for (let i = a.length - 1; i >= 0; i--) for (let j = b.length - 1; j >= 0; j--)
+    table[i * width + j] = a[i] === b[j] ? table[(i + 1) * width + j + 1] + 1 : Math.max(table[(i + 1) * width + j], table[i * width + j + 1])
+  const rows = []; let i = 0, j = 0, removed = [], added = []
+  function flush() {
+    for (let k = 0; k < Math.max(removed.length, added.length); k++) rows.push({ left: removed[k] ?? null, right: added[k] ?? null, changed: true })
+    removed = []; added = []
+  }
+  while (i < a.length || j < b.length) {
+    if (i < a.length && j < b.length && a[i] === b[j]) { flush(); rows.push({ left: { line: i + 1, text: a[i] }, right: { line: j + 1, text: b[j] }, changed: false }); i++; j++ }
+    else if (i < a.length && (j === b.length || table[(i + 1) * width + j] >= table[i * width + j + 1])) { removed.push({ line: i + 1, text: a[i] }); i++ }
+    else { added.push({ line: j + 1, text: b[j] }); j++ }
+  }
+  flush(); return rows
+}
+// END DIFF
+const left = document.getElementById('left'), right = document.getElementById('right')
+const result = document.getElementById('result'), status = document.getElementById('status')
+function cell(item, kind, changed) {
+  const el = document.createElement('div'); el.className = 'cell' + (changed ? ' ' + (item ? kind : 'empty') : '')
+  if (item) { const n = document.createElement('span'); n.className = 'number'; n.textContent = item.line + '  '; el.append(n, document.createTextNode(item.text)) }
+  return el
+}
+function compare(json) {
+  try {
+    let a = left.value.replace(/\r\n/g, '\n'), b = right.value.replace(/\r\n/g, '\n')
+    if (json) {
+      try { a = JSON.stringify(JSON.parse(a), null, 2) } catch { throw new Error('JSON original inválido.') }
+      try { b = JSON.stringify(JSON.parse(b), null, 2) } catch { throw new Error('JSON novo inválido.') }
+    }
+    const rows = diffLines(a, b); result.replaceChildren()
+    for (const item of rows) { const row = document.createElement('div'); row.className = 'result-row'; row.append(cell(item.left, 'removed', item.changed), cell(item.right, 'added', item.changed)); result.append(row) }
+    status.textContent = rows.some(row => row.changed) ? 'Diferenças encontradas.' : 'Os conteúdos são iguais.'
+  } catch (error) { result.replaceChildren(); status.textContent = error.message }
+}
+for (const [id, target] of [['left-file', left], ['right-file', right]]) document.getElementById(id).addEventListener('change', async (event) => {
+  const file = event.target.files[0]; if (!file) return
+  if (file.size > 1024 * 1024) { status.textContent = 'Arquivo maior que 1 MB.'; event.target.value = ''; return }
+  try { target.value = await file.text(); result.replaceChildren(); status.textContent = '' } catch { status.textContent = 'Não foi possível ler o arquivo.' }
+})
+document.getElementById('compare').addEventListener('click', () => compare(false))
+document.getElementById('json').addEventListener('click', () => compare(true))
+document.getElementById('clear').addEventListener('click', () => { left.value = ''; right.value = ''; document.getElementById('left-file').value = ''; document.getElementById('right-file').value = ''; result.replaceChildren(); status.textContent = '' })
+for (const input of [left, right]) input.addEventListener('input', () => { result.replaceChildren(); status.textContent = '' })
+</script>
+</body>
+</html>

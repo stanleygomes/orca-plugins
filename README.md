@@ -4,6 +4,7 @@ Independent plugins for [Orca](https://github.com/stablyai/orca), one per folder
 
 | Plugin | Description | Minimum Orca |
 | --- | --- | --- |
+| [Compare](plugins/compare/README.md) | Compare two text or JSON documents side by side. | 1.4.245 |
 | [Noemi Theme](plugins/noemi/README.md) | Noemi interface, syntax and terminal colors. | 1.4.245 |
 | [Codex Notes](plugins/codex-notes/README.md) | Browse and edit the notes shared with Codex Notes for VS Code. | 1.4.246 |
 

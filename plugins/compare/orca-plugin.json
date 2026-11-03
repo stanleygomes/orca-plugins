@@ -1,0 +1,15 @@
+{
+  "manifestVersion": 2,
+  "execution": "sandboxed-ui",
+  "id": "compare",
+  "publisher": "stanleygomes",
+  "name": "Compare",
+  "version": "1.0.0",
+  "description": "Compare two text or JSON documents side by side.",
+  "engines": { "orca": ">=1.4.245" },
+  "pluginApi": 1,
+  "contributes": {
+    "panels": [{ "id": "compare", "title": "Compare", "icon": "file-text", "entry": "panel.html" }]
+  },
+  "capabilities": []
+}
