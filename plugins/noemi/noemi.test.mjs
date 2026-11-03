@@ -8,6 +8,7 @@ const hex = /^#[0-9a-f]{3,4}(?:[0-9a-f]{3,4})?$/i
 test('all four Noemi variants provide app, syntax and terminal colors', async () => {
   const manifest = await json('./orca-plugin.json')
   assert.equal(manifest.execution, 'data')
+  assert.equal('pluginApi' in manifest, false, 'data-only plugins must omit pluginApi')
   assert.deepEqual(manifest.capabilities, [])
   for (const variant of ['dark', 'light', 'red', 'blue']) {
     const appEntry = manifest.contributes.themes.find((item) => item.id === `noemi-${variant}`)

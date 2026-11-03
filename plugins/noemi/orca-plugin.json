@@ -4,12 +4,11 @@
   "id": "noemi",
   "publisher": "stanleygomes",
   "name": "Noemi Theme",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Noemi colors for Orca, adapted from Noemi for VS Code.",
   "engines": {
     "orca": ">=1.4.245"
   },
-  "pluginApi": 1,
   "contributes": {
     "themes": [
       {
