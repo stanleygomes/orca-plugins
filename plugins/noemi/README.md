@@ -1,6 +1,6 @@
 # Noemi Theme for Orca
 
-The four [Noemi for VS Code](https://github.com/stanleygomes/noemi) palettes, adapted for Orca: **Dark**, **Light**, **Red**, and **Blue**. Each includes an app theme with syntax colors and a separate terminal palette. Orca and VS Code expose different UI elements, so the interface mapping is an approximation; syntax and terminal colors come from Noemi's original theme files.
+[Noemi for VS Code](https://github.com/stanleygomes/noemi) adapted for Orca: **Dark**, **Light**, and **OLED**. OLED uses true black, brighter text and orange accents for higher contrast. Each includes an app theme with syntax colors and a separate terminal palette. Orca and VS Code expose different UI elements, so the interface mapping is an approximation; Dark and Light syntax and terminal colors come from Noemi; OLED adapts them for contrast against black.
 
 ## Install and select
 
@@ -8,4 +8,4 @@ Requires Orca **1.4.245 or newer**. Clone this repository and install `plugins/n
 
 ## Development
 
-The JSON files in `themes/` adapt Noemi's version 1.7.0 theme files. Run `node --test plugins/noemi/*.test.mjs` from the repository root. Validate and preview the themes in a compatible Orca version when available. Noemi is MIT-licensed; its copyright notice is included in [LICENSE](LICENSE).
+The Dark and Light themes adapt Noemi version 1.7.0; OLED is an Orca-specific variation based on Dark. Run `node --test plugins/noemi/*.test.mjs` from the repository root. Validate and preview the themes in a compatible Orca version when available. Noemi is MIT-licensed; its copyright notice is included in [LICENSE](LICENSE).

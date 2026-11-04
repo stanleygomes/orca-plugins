@@ -15,7 +15,7 @@ Run `node --test plugins/*/*.test.mjs` from the root. Also validate and exercise
 
 ## Noemi Theme
 
-`plugins/noemi` is a data-only adaptation of Noemi for VS Code. Keep its four app themes, TextMate rules, and terminal palettes aligned with the source palette. Preserve the upstream MIT license and document any Orca-specific approximations.
+`plugins/noemi` is a data-only adaptation of Noemi for VS Code. Keep Dark and Light aligned with the source palette and maintain OLED as a high-contrast orange variation. Preserve the upstream MIT license and document any Orca-specific approximations.
 
 ## Jacob & Esau
 
